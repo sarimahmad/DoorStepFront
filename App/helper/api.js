@@ -22,7 +22,6 @@ export async function SignUpform(data) {
   return GetResponse;
 }
 
-
 export async function LoginForm(data) {
   var config = {
     method: 'post',
@@ -44,7 +43,7 @@ export async function LoginForm(data) {
   return GetResponse;
 }
 
-export async function UpdateProfileApi(data,id) {
+export async function UpdateProfileApi(data, id) {
   var config = {
     method: 'post',
     url: `${Server}/UpdateProfile/${id}/`,
@@ -65,7 +64,7 @@ export async function UpdateProfileApi(data,id) {
   return GetResponse;
 }
 
-export async function ChangePasswordApi(data,id) {
+export async function ChangePasswordApi(data, id) {
   var config = {
     method: 'post',
     url: `${Server}/ChangePassword/${id}/`,
@@ -86,14 +85,14 @@ export async function ChangePasswordApi(data,id) {
   return GetResponse;
 }
 
-export async function AddProductData(data,token) {
+export async function AddProductData(data, token) {
   var config = {
     method: 'post',
     url: `${Server}/product/AddProduct/`,
     headers: {
       'Content-Type': 'application/json',
       Accept: 'application/json',
-      'Authorization':`Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
     data: data,
   };
@@ -113,9 +112,9 @@ export async function Get_All_Product(token) {
     method: 'GET',
     url: `${Server}/product/get_all_Product/`,
     headers: {
-    'Content-Type': 'application/json',
-    Accept: 'application/json',
-    'Authorization':`Bearer ${token}`,
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+      Authorization: `Bearer ${token}`,
     },
   };
 
@@ -134,9 +133,9 @@ export async function Get_Seller_Product(token) {
     method: 'GET',
     url: `${Server}/product/Seller_Product/`,
     headers: {
-    'Content-Type': 'application/json',
-    Accept: 'application/json',
-    'Authorization':`Bearer ${token}`,
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+      Authorization: `Bearer ${token}`,
     },
   };
 
@@ -150,14 +149,14 @@ export async function Get_Seller_Product(token) {
   return GetResponse;
 }
 
-export async function PlaceBuyerOrder(data,token) {
+export async function PlaceBuyerOrder(data, token) {
   var config = {
     method: 'post',
     url: `${Server}/product/PlaceOrder/`,
     headers: {
       'Content-Type': 'application/json',
       Accept: 'application/json',
-      'Authorization':`Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
     data: data,
   };
@@ -176,9 +175,9 @@ export async function Get_all_Orders(token) {
     method: 'GET',
     url: `${Server}/product/Get_Orders/`,
     headers: {
-    'Content-Type': 'application/json',
-    Accept: 'application/json',
-    'Authorization':`Bearer ${token}`,
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+      Authorization: `Bearer ${token}`,
     },
   };
 
@@ -192,14 +191,14 @@ export async function Get_all_Orders(token) {
   return GetResponse;
 }
 
-export async function Get_all_Review(id,token) {
+export async function Get_all_Review(id, token) {
   var config = {
     method: 'GET',
-    url: `${Server}/product/Get_Review/${id}`,
+    url: `${Server}/product/Get_Review/${id}/`,
     headers: {
-    'Content-Type': 'application/json',
-    Accept: 'application/json',
-    'Authorization':`Bearer ${token}`,
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+      Authorization: `Bearer ${token}`,
     },
   };
 
@@ -213,14 +212,14 @@ export async function Get_all_Review(id,token) {
   return GetResponse;
 }
 
-export async function AddReview(data,token) {
+export async function AddReview(data, token) {
   var config = {
     method: 'post',
     url: `${Server}/product/Add_Review/`,
     headers: {
       'Content-Type': 'application/json',
       Accept: 'application/json',
-      'Authorization':`Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
     data: data,
   };
@@ -257,7 +256,7 @@ export async function ChangeStatus(data) {
   return GetResponse;
 }
 
-export async function deleteOrderapi(id,data) {
+export async function deleteOrderapi(id, data) {
   var config = {
     method: 'delete',
     url: `${Server}/product/delete_order/${id}/`,
@@ -266,7 +265,7 @@ export async function deleteOrderapi(id,data) {
       Accept: 'application/json',
       // 'Authorization':`Bearer ${token}`,
     },
-    data:data
+    data: data,
   };
   const GetResponse = await axios(config)
     .then(function (response) {
@@ -278,7 +277,7 @@ export async function deleteOrderapi(id,data) {
   return GetResponse;
 }
 
-export async function UpdateQuantityApi(id,data) {
+export async function UpdateQuantityApi(id, data) {
   var config = {
     method: 'post',
     url: `${Server}/product/UpdateQuantity/${id}/`,
@@ -287,7 +286,7 @@ export async function UpdateQuantityApi(id,data) {
       Accept: 'application/json',
       // 'Authorization':`Bearer ${token}`,
     },
-    data:data
+    data: data,
   };
   const GetResponse = await axios(config)
     .then(function (response) {
@@ -298,4 +297,3 @@ export async function UpdateQuantityApi(id,data) {
     });
   return GetResponse;
 }
-
