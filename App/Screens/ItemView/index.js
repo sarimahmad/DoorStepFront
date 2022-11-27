@@ -10,12 +10,13 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import Loader from '../../Components/Loader';
-import {Get_all_Review} from '../../helper/api';
+import {Get_all_Review, AddReview, deleteProductapi} from '../../helper/api';
 import {connect} from 'react-redux';
 import * as userActions from '../../redux/actions/user';
 import {isIphoneXorAbove} from '../../helper/Constant';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Server from '../../helper/Server';
+import {BLACK} from '../../helper/Color';
 class ItemView extends Component {
   constructor(props) {
     super(props);
@@ -25,6 +26,7 @@ class ItemView extends Component {
       password: '',
       loading: false,
       productData: '',
+      reviews_Size: 3,
       all_Review: '',
       reviewText: '',
       value: '1',
@@ -34,15 +36,23 @@ class ItemView extends Component {
 
   async componentDidMount() {
     const data = this.props.route.params.data;
-    const token = this.props.userToken;
+    this.all_Review(data.id);
     this.setState({productData: data});
-    await Get_all_Review(48, token).then(response => {
+  }
+
+  async all_Review(data) {
+    const token = this.props.userToken;
+    this.setState({loading: true});
+    await Get_all_Review(data, token).then(response => {
       if (response && response.status === 200) {
         this.setState({all_Review: response.data});
+        this.setState({loading: false});
       } else {
+        this.setState({loading: false});
         alert('Some thing went wrong');
       }
     });
+    this.setState({loading: false});
   }
 
   async AddCart(item) {
@@ -61,7 +71,6 @@ class ItemView extends Component {
           oldData.push({...item, NumberofProduct: this.state.value});
           AsyncStorage.setItem('Cart', JSON.stringify(oldData));
           alert('Item Added');
-          console.log('Hello', oldData);
         }
       }
     } else {
@@ -85,16 +94,62 @@ class ItemView extends Component {
   }
 
   CheckQuantityProduct() {
-    if (this.state.productData.quantity === 0) {
-      alert('Out of Stock');
-    } else if (this.state.productData.quantity < Number(this.state.value)) {
-      alert('Amout is Greater than Available Product');
+    if (Number(this.state.value) < 1) {
+      alert('Quantity Should not be less than 0');
     } else {
-      this.props.navigation.navigate('PlaceOrder', {
-        data: {...this.state.productData, NumberofProduct: this.state.value},
-      });
+      if (this.state.productData.quantity === 0) {
+        alert('Out of Stock');
+      } else if (this.state.productData.quantity < Number(this.state.value)) {
+        alert('Amout is Greater than Available Product');
+      } else {
+        this.props.navigation.navigate('PlaceOrder', {
+          data: {...this.state.productData, NumberofProduct: this.state.value},
+        });
+      }
     }
   }
+
+  async AddChatList_Seller() {
+    let chatData = await AsyncStorage.getItem('chatData');
+    if (chatData) {
+      chatData = JSON.parse(chatData);
+      if (!chatData.includes(this.props.userDetail.username)) {
+        chatData.push(this.props.userDetail.username);
+        AsyncStorage.setItem('chatData', JSON.stringify(chatData));
+      }
+    } else {
+      let data = [this.props.userDetail.username];
+      AsyncStorage.setItem('chatData', JSON.stringify(data));
+    }
+  }
+  async addReview() {
+    const token = this.props.userToken;
+    let data = {
+      product: this.props.route.params.data.id,
+      Review: this.state.reviewText,
+    };
+    await AddReview(data, token).then(response => {
+      if (response && response.status === 200) {
+        this.setState({reviewText: ''});
+        alert('Review Added Sucessfully');
+        this.setState({lastRefresh: true});
+        this.all_Review(this.props.route.params.data.id);
+      } else {
+        alert('Some thing went wrong');
+      }
+    });
+  }
+
+  async DeleteProduct() {
+    await deleteProductapi(this.state.productData.id).then(response => {
+      if (response && response.status === 200) {
+        this.props.navigation.goBack();
+      } else {
+        alert('Some thing went wrong');
+      }
+    });
+  }
+
   render() {
     return (
       <View style={styles.wrapperView}>
@@ -169,6 +224,7 @@ class ItemView extends Component {
                       }}>
                       <TextInput
                         value={this.state.value}
+                        keyboardType="numeric"
                         onChangeText={val => this.setState({value: val})}
                         style={{
                           width: '50%',
@@ -227,90 +283,59 @@ class ItemView extends Component {
                 {this.state.productData.product_description}
               </Text>
 
-              <View
+              <TouchableOpacity
+                onPress={() => {
+                  this.AddChatList_Seller();
+                  this.props.navigation.navigate('Contact', {
+                    data: {...this.state.productData},
+                  });
+                }}
                 style={{
                   flexDirection: 'row',
                   alignItems: 'center',
                   alignSelf: 'center',
                 }}>
-                <Image
-                  style={{width: 26, height: 26, marginRight: 20}}
-                  source={require('../../assets/contact.png')}
-                />
-                <Text
-                  onPress={() =>
-                    this.props.navigation.navigate('Contact', {
-                      data: {...this.state.productData},
-                    })
-                  }
-                  style={{fontSize: 20, fontWeight: '800', color: '#C60404'}}>
-                  {this.props.role === 'Seller'
-                    ? 'Message About Product'
-                    : 'Contact Seller'}
-                </Text>
-              </View>
-
-              <View style={styles.LastBox}>
-                <View style={[styles.lastItem, {marginTop: 15}]}>
-                  <Text>Reviews</Text>
-                  <TouchableOpacity
-                    onPress={() =>
-                      this.setState({showReview: !this.state.showReview})
-                    }>
-                    <Image
-                      style={{width: 13, height: 6, resizeMode: 'contain'}}
-                      source={require('../../assets/down.png')}
-                    />
-                  </TouchableOpacity>
-                </View>
-
-                {this.state.showReview && (
-                  <View style={{height: 80}}>
-                    <FlatList
-                      data={this.state.all_Review}
-                      refreshing={this.state.lastRefresh}
-                      keyExtractor={(item, index) => index.toString()}
-                      renderItem={({item}) => (
-                        <View
-                          style={{
-                            width: '100%',
-                            marginBottom: 10,
-                            borderWidth: 1,
-                            padding: 5,
-                            borderRadius: 5,
-                          }}>
-                          <Text style={{}}>
-                            Review : {item.length !== 0 ? item.Review : ''}
-                          </Text>
-                          <Text>
-                            User : {item.length !== 0 ? item.user.username : ''}
-                          </Text>
-                        </View>
-                      )}
-                    />
-                  </View>
+                {this.props.role === 'Buyer' && (
+                  <Image
+                    style={{width: 26, height: 26, marginRight: 20}}
+                    source={require('../../assets/contact.png')}
+                  />
                 )}
-                {this.state.showReview === false && (
-                  <View style={styles.lastItem}>
-                    <Text>Nutrition</Text>
-                    <Image
-                      style={{width: 13, height: 6, resizeMode: 'contain'}}
-                      source={require('../../assets/down.png')}
-                    />
+                {this.props.role === 'Seller' ? (
+                  <View>
+                    <Text
+                      onPress={() =>
+                        this.props.navigation.navigate('AddProduct', {
+                          editable: true,
+                          ProductInfo: this.state.productData,
+                        })
+                      }
+                      style={{
+                        fontSize: 20,
+                        fontWeight: '800',
+                        color: '#C60404',
+                      }}>
+                      Edit Product
+                    </Text>
+                    <Text
+                      onPress={() => this.DeleteProduct()}
+                      style={{
+                        fontSize: 20,
+                        fontWeight: '800',
+                        marginTop: 10,
+                        color: '#C60404',
+                      }}>
+                      Delete Product
+                    </Text>
                   </View>
+                ) : (
+                  <Text
+                    style={{fontSize: 20, fontWeight: '800', color: '#C60404'}}>
+                    Contact Seller
+                  </Text>
                 )}
-                {this.state.showReview === false && (
-                  <View style={styles.lastItem}>
-                    <Text>products</Text>
-                    <Image
-                      style={{width: 13, height: 6, resizeMode: 'contain'}}
-                      source={require('../../assets/down.png')}
-                    />
-                  </View>
-                )}
-              </View>
+              </TouchableOpacity>
             </View>
-
             <View
               style={{
                 borderBottomWidth: 5,
@@ -319,6 +344,69 @@ class ItemView extends Component {
                 marginVertical: 20,
               }}
             />
+
+            <View style={{paddingHorizontal: 35, marginBottom: 30}}>
+              <Text style={styles.BoldText}>Reccomended reviews</Text>
+              {this.state.all_Review && this.state.all_Review.length !== 0 ? (
+                this.state.all_Review
+                  .slice(0, this.state.reviews_Size)
+                  .map(val => (
+                    <View>
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          paddingLeft: 12,
+                          paddingTop: 12,
+                          alignItems: 'center',
+                        }}>
+                        <Image
+                          style={{
+                            width: 31,
+                            height: 34,
+                            resizeMode: 'contain',
+                            marginRight: 10,
+                          }}
+                          source={require('../../assets/profile.png')}
+                        />
+                        <Text style={[styles.BoldText, {fontWeight: '600'}]}>
+                          {val.user.username}
+                        </Text>
+                      </View>
+                      <Text
+                        style={{
+                          fontSize: 15,
+                          fontWeight: '400',
+                          color: 'rgba(0, 0, 0, 0.98)',
+                          paddingLeft: 60,
+                          paddingTop: 10,
+                        }}>
+                        {val.Review}
+                      </Text>
+                    </View>
+                  ))
+              ) : (
+                <Text style={styles.BoldText}>No Reviews</Text>
+              )}
+
+              {this.state.all_Review.length !== this.state.reviews_Size && (
+                <TouchableOpacity
+                  onPress={() =>
+                    this.setState({reviews_Size: this.state.all_Review.length})
+                  }
+                  style={{
+                    width: '100%',
+                    borderWidth: 1,
+                    borderColor: BLACK.dark,
+                    borderRadius: 10,
+                    height: 58,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginTop: 20,
+                  }}>
+                  <Text style={styles.BoldText}>Load More Reveiws</Text>
+                </TouchableOpacity>
+              )}
+            </View>
           </ScrollView>
         </View>
 
@@ -365,6 +453,11 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     alignItems: 'center',
     marginBottom: isIphoneXorAbove ? 15 : 10,
+  },
+  BoldText: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: BLACK.dark,
   },
 });
 

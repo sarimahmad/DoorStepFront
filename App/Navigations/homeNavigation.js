@@ -2,7 +2,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-shadow */
 /* eslint-disable react-native/no-inline-styles */
-import React, {useState} from 'react';
+import React from 'react';
 import {View, Image} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
@@ -11,9 +11,9 @@ import Home from '../Screens/Home';
 import Splash from '../Screens/Splash';
 import SignUp from '../Screens/SignUp';
 import Login from '../Screens/Login';
-import Notifications from '../Screens/Notification'
-import Cart from '../Screens/Cart'
-import Account from '../Screens/Account'
+import Notifications from '../Screens/Notification';
+import Cart from '../Screens/Cart';
+import Account from '../Screens/Account';
 import ItemView from '../Screens/ItemView';
 import PlaceOrder from '../Screens/PlaceOrder';
 import ViewMore from '../Screens/ViewMore';
@@ -25,6 +25,7 @@ import PaymentMethod from '../Screens/PaymentMethod';
 import AddCard from '../Screens/AddCard';
 import Information from '../Screens/Information';
 import Review from '../Screens/Review';
+import UserChats from '../Screens/UserChats';
 import PaymentSucess from '../Screens/PaymentSucess';
 import OrderDetails from '../Screens/OrderDetails';
 import Contact from '../Screens/Contact';
@@ -32,16 +33,13 @@ import Contact from '../Screens/Contact';
 import CustomSidebarMenu from './CustomSideBarMenu';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import { BLACK, ORANGE, WHITE } from '../helper/Color';
+import {BLACK, ORANGE} from '../helper/Color';
 import {connect} from 'react-redux';
 import * as userActions from '../redux/actions/user';
-
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 const BottomTab = createBottomTabNavigator();
-
-
 
 function BottomTabNavigator(props) {
   return (
@@ -52,7 +50,7 @@ function BottomTabNavigator(props) {
         tabBarInactiveTintColor: BLACK.dark,
         tabBarActiveTintColor: ORANGE.dark,
         tabBarStyle: {
-          backgroundColor: "white",
+          backgroundColor: 'white',
         },
         tabBarLabelStyle: {
           fontSize: 12,
@@ -60,10 +58,8 @@ function BottomTabNavigator(props) {
         },
       }}>
       <BottomTab.Screen
-        name={"Home2"}
-        component={
-       MainHome
-        }
+        name={'Home2'}
+        component={MainHome}
         options={{
           tabBarIcon: ({focused}) => {
             return (
@@ -97,24 +93,26 @@ function BottomTabNavigator(props) {
           },
         }}
       />
-    {role ==='Buyer' &&   <BottomTab.Screen
-        name="Cart"
-        component={Cart}
-        options={{
-          tabBarIcon: ({focused}) => {
-            return (
-              <Image
-                style={{width: 20, height: 20}}
-                source={
-                  focused
-                    ? require('../assets/Cart.png')
-                    : require('../assets/Cart.png')
-                }
-              />
-            );
-          },
-        }}
-      />}
+      {role === 'Buyer' && (
+        <BottomTab.Screen
+          name="Cart"
+          component={Cart}
+          options={{
+            tabBarIcon: ({focused}) => {
+              return (
+                <Image
+                  style={{width: 20, height: 20}}
+                  source={
+                    focused
+                      ? require('../assets/Cart.png')
+                      : require('../assets/Cart.png')
+                  }
+                />
+              );
+            },
+          }}
+        />
+      )}
 
       <BottomTab.Screen
         name="Account"
@@ -141,7 +139,7 @@ function BottomTabNavigator(props) {
 function CustomerDrawer(props) {
   return (
     <Drawer.Navigator
-      initialRouteName="MainHome"
+      initialRouteName="Home"
       drawerStyle={{
         // borderTopEndRadius: isIphoneXorAbove ? 80 : 50,
         // borderBottomEndRadius: 50,
@@ -158,11 +156,9 @@ function CustomerDrawer(props) {
           color: 'white',
         },
       }}
-      drawerContent={props => <CustomSidebarMenu {...props} />}
-     >
-       
+      drawerContent={props => <CustomSidebarMenu {...props} />}>
       <Drawer.Screen
-        name="MainHome"
+        name="Home"
         options={{
           drawerIcon: ({focused, size}) =>
             focused ? (
@@ -176,13 +172,13 @@ function CustomerDrawer(props) {
                   backgroundColor: '#FCC60F',
                 }}>
                 <Image
-                  style={{width: 33, height: 33,resizeMode:'contain'}}
+                  style={{width: 33, height: 33, resizeMode: 'contain'}}
                   source={require('../assets/Account.png')}
                 />
               </View>
             ) : (
               <Image
-                style={{width: 33, height: 33,resizeMode:'contain'}}
+                style={{width: 33, height: 33, resizeMode: 'contain'}}
                 source={require('../assets/Account.png')}
               />
             ),
@@ -191,7 +187,7 @@ function CustomerDrawer(props) {
         component={BottomTabNavigator}
       />
 
-<Drawer.Screen
+      <Drawer.Screen
         name="MyOrders"
         options={{
           drawerIcon: ({focused, size}) =>
@@ -206,13 +202,13 @@ function CustomerDrawer(props) {
                   backgroundColor: '#FCC60F',
                 }}>
                 <Image
-                  style={{width: 33, height: 33, resizeMode:"contain"}}
+                  style={{width: 33, height: 33, resizeMode: 'contain'}}
                   source={require('../assets/MyOrder.png')}
                 />
               </View>
             ) : (
               <Image
-                style={{width: 33, height: 33,resizeMode:"contain"}}
+                style={{width: 33, height: 33, resizeMode: 'contain'}}
                 source={require('../assets/MyOrder.png')}
               />
             ),
@@ -220,10 +216,8 @@ function CustomerDrawer(props) {
         }}
         component={MyOrders}
       />
-
-
-{ role === "Buyer" ? <Drawer.Screen
-        name="MyWishList"
+          <Drawer.Screen
+        name="MyChats"
         options={{
           drawerIcon: ({focused, size}) =>
             focused ? (
@@ -237,57 +231,87 @@ function CustomerDrawer(props) {
                   backgroundColor: '#FCC60F',
                 }}>
                 <Image
-                  style={{width: 33, height: 33, resizeMode:"contain"}}
+                  style={{width: 33, height: 33, resizeMode: 'contain'}}
                   source={require('../assets/MyOrder.png')}
                 />
               </View>
             ) : (
               <Image
-                style={{width: 33, height: 33,resizeMode:"contain"}}
+                style={{width: 33, height: 33, resizeMode: 'contain'}}
                 source={require('../assets/MyOrder.png')}
               />
             ),
-          title: 'My Wish List',
+          title: 'My Chats',
         }}
-        component={WishList}
-      /> : null}
+        component={UserChats}
+      />
 
-{ role === "Seller" ? <Drawer.Screen
-        name="SellOnline"
-        options={{
-          drawerIcon: ({focused, size}) =>
-            focused ? (
-              <View
-                style={{
-                  height: 41,
-                  width: 41,
-                  borderRadius: 10,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  backgroundColor: '#FCC60F',
-                }}>
+      {role === 'Buyer' ? (
+        <Drawer.Screen
+          name="MyWishList"
+          options={{
+            drawerIcon: ({focused, size}) =>
+              focused ? (
+                <View
+                  style={{
+                    height: 41,
+                    width: 41,
+                    borderRadius: 10,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: '#FCC60F',
+                  }}>
+                  <Image
+                    style={{width: 33, height: 33, resizeMode: 'contain'}}
+                    source={require('../assets/MyOrder.png')}
+                  />
+                </View>
+              ) : (
+                <Image
+                  style={{width: 33, height: 33, resizeMode: 'contain'}}
+                  source={require('../assets/MyOrder.png')}
+                />
+              ),
+            title: 'My Wish List',
+          }}
+          component={WishList}
+        />
+      ) : null}
+
+      {role === 'Seller' ? (
+        <Drawer.Screen
+          name="SellOnline"
+          options={{
+            drawerIcon: ({focused, size}) =>
+              focused ? (
+                <View
+                  style={{
+                    height: 41,
+                    width: 41,
+                    borderRadius: 10,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: '#FCC60F',
+                  }}>
+                  <Image
+                    style={{width: 33, height: 33}}
+                    source={require('../assets/sellonline.png')}
+                  />
+                </View>
+              ) : (
                 <Image
                   style={{width: 33, height: 33}}
                   source={require('../assets/sellonline.png')}
                 />
-              </View>
-            ) : (
-              <Image
-                style={{width: 33, height: 33}}
-                source={require('../assets/sellonline.png')}
-              />
-            ),
-          title: 'Sell Online',
-        }}
-        component={AddProduct}
-      />: null}
-      
+              ),
+            title: 'Sell Online',
+          }}
+          component={AddProduct}
+        />
+      ) : null}
     </Drawer.Navigator>
   );
 }
-
-
-
 
 function AuthNavigator(props) {
   return (
@@ -300,9 +324,6 @@ function AuthNavigator(props) {
       <Stack.Screen name="SignUp" component={SignUp} />
       <Stack.Screen name="Login" component={Login} />
       <Stack.Screen name="SignUpAs" component={SignUpAs} />
-      
-    
-      
     </Stack.Navigator>
   );
 }
@@ -314,15 +335,14 @@ function MainHome(props) {
       screenOptions={{
         headerShown: false,
       }}>
-       <Stack.Screen name="MainHome" component={Home} />
-       <Stack.Screen name="ItemView" component={ItemView} />
-       <Stack.Screen name="ViewMore" component={ViewMore} />
-       <Stack.Screen name="PlaceOrder" component={PlaceOrder} />
-       <Stack.Screen name="Information" component={Information} />
+      <Stack.Screen name="MainHome" component={Home} />
+      <Stack.Screen name="ItemView" component={ItemView} />
+      <Stack.Screen name="ViewMore" component={ViewMore} />
+      <Stack.Screen name="PlaceOrder" component={PlaceOrder} />
+      <Stack.Screen name="Information" component={Information} />
     </Stack.Navigator>
   );
 }
-
 
 function MainNavigation(props) {
   global.role = props.role;
@@ -344,10 +364,6 @@ function MainNavigation(props) {
         <Stack.Screen name="PaymentSucess" component={PaymentSucess} />
         <Stack.Screen name="OrderDetails" component={OrderDetails} />
         <Stack.Screen name="Contact" component={Contact} />
-        
-        
-        
-        
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -367,5 +383,3 @@ const mapDispatchToProps = dispatch => {
   };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(MainNavigation);
-
-  

@@ -34,7 +34,6 @@ class OrderDetails extends Component {
   componentDidMount() {
     // this._unsubscribe = this.props.navigation.addListener('focus', async () => {
     const data = this.props.route.params.item;
-    console.log('daataaa', data);
     this.setState({orderDetails: data});
     this.setState({statues: data.Product_Status});
     // });
@@ -93,20 +92,22 @@ class OrderDetails extends Component {
 
   async addReview() {
     const token = this.props.userToken;
+
     let data = {
-      product: this.state.orderDetails && this.state.orderDetails.product.id,
+      product: this.state.orderDetails && this.state.orderDetails.product[0].id,
       Review: this.state.reviewText,
     };
+    console.log(data);
 
-    await AddReview(data, token).then(response => {
-      console.log(response);
-      if (response && response.status === 200) {
-        alert('review Added');
-        this.setState({lastRefresh: true});
-      } else {
-        alert('Some thing went wrong');
-      }
-    });
+    // await AddReview(data, token).then(response => {
+    //   console.log(response);
+    //   if (response && response.status === 200) {
+    //     alert('review Added');
+    //     this.setState({lastRefresh: true});
+    //   } else {
+    //     alert('Some thing went wrong');
+    //   }
+    // });
   }
   // componentWillUnmount() {
   //   this._unsubscribe();

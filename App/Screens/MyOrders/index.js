@@ -65,7 +65,6 @@ class MyOrders extends Component {
 
       Get_all_Orders(token).then(response => {
         if (response && response.status === 200) {
-          console.log(response);
           const delivered = response.data.filter(val => {
             return val.delivered === true;
           });

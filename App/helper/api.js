@@ -276,6 +276,25 @@ export async function deleteOrderapi(id, data) {
     });
   return GetResponse;
 }
+export async function deleteProductapi(id) {
+  var config = {
+    method: 'delete',
+    url: `${Server}/product/DeleteProduct/${id}/`,
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+      // 'Authorization':`Bearer ${token}`,
+    },
+  };
+  const GetResponse = await axios(config)
+    .then(function (response) {
+      return response;
+    })
+    .catch(function (error) {
+      return error.response;
+    });
+  return GetResponse;
+}
 
 export async function UpdateQuantityApi(id, data) {
   var config = {
@@ -285,6 +304,26 @@ export async function UpdateQuantityApi(id, data) {
       'Content-Type': 'application/json',
       Accept: 'application/json',
       // 'Authorization':`Bearer ${token}`,
+    },
+    data: data,
+  };
+  const GetResponse = await axios(config)
+    .then(function (response) {
+      return response;
+    })
+    .catch(function (error) {
+      return error.response;
+    });
+  return GetResponse;
+}
+export async function EditProductApi(id, data) {
+  var config = {
+    method: 'post',
+    url: `${Server}/product/EditQuantity/${id}/`,
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+      // Authorization: `Bearer ${token}`,
     },
     data: data,
   };
