@@ -32,11 +32,11 @@ class OrderDetails extends Component {
     };
   }
   componentDidMount() {
-    // this._unsubscribe = this.props.navigation.addListener('focus', async () => {
-    const data = this.props.route.params.item;
-    this.setState({orderDetails: data});
-    this.setState({statues: data.Product_Status});
-    // });
+    this._unsubscribe = this.props.navigation.addListener('focus', async () => {
+      const data = this.props.route.params.item;
+      this.setState({orderDetails: data});
+      this.setState({statues: data.Product_Status});
+    });
   }
   async ChanegStatus() {
     let status = this.state.statues.slice(-1).pop();
@@ -99,19 +99,19 @@ class OrderDetails extends Component {
     };
     console.log(data);
 
-    // await AddReview(data, token).then(response => {
-    //   console.log(response);
-    //   if (response && response.status === 200) {
-    //     alert('review Added');
-    //     this.setState({lastRefresh: true});
-    //   } else {
-    //     alert('Some thing went wrong');
-    //   }
-    // });
+    await AddReview(data, token).then(response => {
+      console.log(response);
+      if (response && response.status === 200) {
+        alert('review Added');
+        this.setState({lastRefresh: true});
+      } else {
+        alert('Some thing went wrong');
+      }
+    });
   }
-  // componentWillUnmount() {
-  //   this._unsubscribe();
-  // }
+  componentWillUnmount() {
+    this._unsubscribe();
+  }
 
   render() {
     return (
