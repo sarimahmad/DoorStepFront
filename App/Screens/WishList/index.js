@@ -34,6 +34,7 @@ class WishList extends Component {
   async componentDidMount() {
     this.setState({loading: true});
     this._unsubscribe = this.props.navigation.addListener('focus', async () => {
+      this.setState({value: '0'});
       let wishData = await AsyncStorage.getItem('WishList');
       wishData = JSON.parse(wishData);
       console.log('dara', wishData);

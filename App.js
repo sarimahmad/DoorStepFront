@@ -37,7 +37,7 @@ class App extends Component {
   }
 
   async componentDidMount() {
-    // LogBox.ignoreAllLogs();
+    LogBox.ignoreAllLogs();
     BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
     this.setState({isReady: true});
   }

@@ -6,6 +6,7 @@ import {
   FlatList,
   Alert,
   TouchableOpacity,
+  Platform,
 } from 'react-native';
 import React, {Component} from 'react';
 import {BLACK, RED, WHITE} from '../../helper/Color';
@@ -109,7 +110,13 @@ export default class Cart extends Component {
           </Text>
         </View>
         <View style={{flex: 1}}>
-          <View style={{height: SCREEN.height / 1.7}}>
+          <View
+            style={{
+              height:
+                Platform.OS === 'ios'
+                  ? SCREEN.height / 1.7
+                  : SCREEN.height / 1.8,
+            }}>
             {this.state.data && this.state.data.length !== 0 ? (
               <FlatList
                 data={this.state.data}
