@@ -67,6 +67,8 @@ class ItemView extends Component {
       } else {
         if (this.state.value === '0') {
           alert('Enter Number of Products');
+        } else if (this.state.value < 1) {
+          alert('Value should not be less than 1');
         } else {
           oldData.push({...item, NumberofProduct: this.state.value});
           AsyncStorage.setItem('Cart', JSON.stringify(oldData));

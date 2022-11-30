@@ -69,7 +69,7 @@ class Information extends Component {
     } else if (!check_Address) {
       alert('Invalid Address');
     } else if (!check_Area) {
-      alert('Password Area');
+      alert('Invalid Area');
     }
     return false;
   }
@@ -87,7 +87,9 @@ class Information extends Component {
   async placeBuyerOrder() {
     const token = this.props.userToken;
     const data = {
-      seller: this.state.data.seller,
+      seller: Array.isArray(this.state.data.seller)
+        ? this.state.data.seller
+        : [this.state.data.seller.id],
       product: Array.isArray(this.state.data.product)
         ? this.state.data.product
         : [this.state.data.product],
@@ -104,10 +106,10 @@ class Information extends Component {
       orderNotes: this.state.OrderNotes,
     };
     console.log('OrderPlacing Data', data);
-    this.setState({loading: true});
+
     if (this.isFormFilled()) {
+      this.setState({loading: true});
       await PlaceBuyerOrder(data, token).then(response => {
-        console.log(response);
         if (response && response.status === 200) {
           this.removeFromCart();
           this.setState({loading: false});

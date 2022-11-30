@@ -44,7 +44,7 @@ const BottomTab = createBottomTabNavigator();
 function BottomTabNavigator(props) {
   return (
     <BottomTab.Navigator
-      initialRouteName="Home2"
+      initialRouteName="Home"
       screenOptions={{
         headerShown: false,
         tabBarInactiveTintColor: BLACK.dark,
@@ -58,7 +58,7 @@ function BottomTabNavigator(props) {
         },
       }}>
       <BottomTab.Screen
-        name={'Home2'}
+        name={'Home'}
         component={MainHome}
         options={{
           tabBarIcon: ({focused}) => {

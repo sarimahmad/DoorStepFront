@@ -1,4 +1,10 @@
-import {SET_USER, ALTER_USER, ALTER_JUST_USER, SET_TOKEN, SET_INS_ID} from './types';
+import {
+  SET_USER,
+  ALTER_USER,
+  ALTER_JUST_USER,
+  SET_TOKEN,
+  SET_INS_ID,
+} from './types';
 
 function setInsId(InsId) {
   return dispatch => {

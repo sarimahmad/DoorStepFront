@@ -144,6 +144,8 @@ class Home extends Component {
               <Text style={styles.itemHead}>
                 {this.props.role === 'Seller' ? 'Your All Product' : 'Featured'}
               </Text>
+
+              {/* Featured */}
               <FlatList
                 horizontal={true}
                 data={this.state.SearchedData}
@@ -199,6 +201,7 @@ class Home extends Component {
                   <Text style={{color: 'white'}}>View More</Text>
                 </TouchableOpacity>
               </View>
+              {/* Fresh Fruits */}
               <FlatList
                 horizontal={true}
                 data={this.state.all_data.Fruits}
@@ -254,6 +257,7 @@ class Home extends Component {
                   <Text style={{color: 'white'}}>View More</Text>
                 </TouchableOpacity>
               </View>
+              {/* Fresh Vegetable */}
               <FlatList
                 horizontal={true}
                 data={this.state.all_data.vegetables}

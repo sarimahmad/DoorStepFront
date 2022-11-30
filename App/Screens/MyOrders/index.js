@@ -18,8 +18,8 @@ import {
 } from '../../helper/api';
 import {connect} from 'react-redux';
 import * as userActions from '../../redux/actions/user';
-import {BLACK, GREY, ORANGE, RED, WHITE} from '../../helper/Color';
-import {FONT, isIphoneXorAbove, SCREEN} from '../../helper/Constant';
+import {BLACK, RED, WHITE} from '../../helper/Color';
+import {isIphoneXorAbove, SCREEN} from '../../helper/Constant';
 import Server from '../../helper/Server';
 
 class MyOrders extends Component {
@@ -47,9 +47,11 @@ class MyOrders extends Component {
   }
 
   async componentDidMount() {
-    this.setState({loading: true});
     const token = this.props.userToken;
+    this.setState({loading: true});
     this._unsubscribe = this.props.navigation.addListener('focus', async () => {
+      this.setState({selectedCategory: 0});
+
       await Get_Seller_Product(token).then(response => {
         if (response && response.status === 200) {
           const outofStock = response.data.filter(val => {
@@ -62,8 +64,7 @@ class MyOrders extends Component {
           this.setState({loading: false});
         }
       });
-
-      Get_all_Orders(token).then(response => {
+      await Get_all_Orders(token).then(response => {
         if (response && response.status === 200) {
           const delivered = response.data.filter(val => {
             return val.delivered === true;
@@ -73,7 +74,6 @@ class MyOrders extends Component {
           });
           this.setState({deliver: delivered});
           this.setState({Order: orders});
-
           this.setState({loading: false});
         } else {
           alert('Some thing went wrong');
