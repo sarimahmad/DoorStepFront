@@ -75,7 +75,8 @@ class OrderDetails extends Component {
     let data = {
       quantity: this.state.orderDetails.quantity,
     };
-    if (status.length == 0) {
+    console.log(id, data);
+    if (status.length === 0) {
       await deleteOrderapi(id, data).then(response => {
         console.log(response);
         if (response && response.status === 200) {
@@ -131,10 +132,10 @@ class OrderDetails extends Component {
             </TouchableOpacity>
             <Text style={{fontSize: 28}}>Delivery Detail</Text>
           </View>
-          <Image
+          {/* <Image
             style={{width: 25, height: 25, resizeMode: 'contain'}}
             source={require('../../assets/cross.png')}
-          />
+          /> */}
         </View>
         <View style={{flex: 1}}>
           <SafeAreaView style={{flex: 1}}>
@@ -370,13 +371,14 @@ class OrderDetails extends Component {
                       </Text>
 
                       <TextInput
+                        multiline={true}
                         onChangeText={val => this.setState({reviewText: val})}
                         style={styles.addReview}
                         placeholder="Add Review"
                       />
 
                       <TouchableOpacity
-                        style={{position: 'absolute', right: 20, top: 50}}
+                        style={{position: 'absolute', right: 20, top: 55}}
                         onPress={() => this.addReview()}>
                         <Image
                           style={{width: 30, height: 30, resizeMode: 'contain'}}
@@ -422,6 +424,7 @@ const styles = StyleSheet.create({
     height: 50,
     paddingBottom: 10,
     marginVertical: 20,
+    paddingRight: 50,
     borderBottomWidth: 1,
     borderBottomColor: GREY.light,
     fontSize: 17,

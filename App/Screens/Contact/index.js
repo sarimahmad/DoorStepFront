@@ -25,7 +25,7 @@ const Contact = props => {
   useEffect(() => {
     const data = props.route.params.data;
     setuserName(props.userDetail.username);
-    let id = JSON.stringify(data.seller);
+    let id = JSON.stringify(data.seller.id);
     console.log(id);
     global.ws = new WebSocket(`${ServerSocket}/ws/chat/${id}/`);
     ws.onopen = () => {

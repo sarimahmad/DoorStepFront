@@ -14,8 +14,8 @@ class Splash extends Component {
   }
   async componentDidMount() {
     this._unsubscribe = this.props.navigation.addListener('focus', async () => {
-    this.checkUSer();
-    // AsyncStorage.clear();
+      this.checkUSer();
+      // AsyncStorage.clear();
     });
   }
 
@@ -23,34 +23,34 @@ class Splash extends Component {
     const userDetail = await AsyncStorage.getItem('USERDETAIL');
     const TOKEN = await AsyncStorage.getItem('TOKENSAVE');
     const ROLE = await AsyncStorage.getItem('ROLE');
-    console.log(TOKEN)
     setTimeout(async () => {
       if (JSON.parse(TOKEN)) {
-            
-            this.props.callApi(
-              JSON.parse(userDetail),
-              JSON.parse(TOKEN),
-              JSON.parse(ROLE),
-            );
-            this.props.navigation.navigate('Home');
-      }
-      else{
-        console.log("Hello")
+        this.props.callApi(
+          JSON.parse(userDetail),
+          JSON.parse(TOKEN),
+          JSON.parse(ROLE),
+        );
+        this.props.navigation.navigate('Home');
+      } else {
+        console.log('Hello');
         this.props.navigation.navigate('Login');
-      }   
+      }
     }, 1000);
   };
-
 
   render() {
     return (
       <View style={{flex: 1, backgroundColor: RED.dark}}>
-        <SafeAreaView style={{flex: 1, justifyContent:'center'}}>
-
-                <Text style={{fontSize: 34, fontWeight:'bold', color: WHITE.dark, textAlign:"center"}}>Door Step Farmer</Text>
-
-
-    
+        <SafeAreaView style={{flex: 1, justifyContent: 'center'}}>
+          <Text
+            style={{
+              fontSize: 34,
+              fontWeight: 'bold',
+              color: WHITE.dark,
+              textAlign: 'center',
+            }}>
+            Door Step Farmer
+          </Text>
         </SafeAreaView>
       </View>
     );

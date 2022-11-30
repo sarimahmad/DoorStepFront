@@ -109,16 +109,16 @@ class ItemView extends Component {
     }
   }
 
-  async AddChatList_Seller() {
+  async AddChatList_Seller(item) {
     let chatData = await AsyncStorage.getItem('chatData');
     if (chatData) {
       chatData = JSON.parse(chatData);
-      if (!chatData.includes(this.props.userDetail.username)) {
-        chatData.push(this.props.userDetail.username);
+      if (chatData.filter(e => e.id === item.id).length === 0) {
+        chatData.push(item);
         AsyncStorage.setItem('chatData', JSON.stringify(chatData));
       }
     } else {
-      let data = [this.props.userDetail.username];
+      let data = [item];
       AsyncStorage.setItem('chatData', JSON.stringify(data));
     }
   }
@@ -285,7 +285,7 @@ class ItemView extends Component {
 
               <TouchableOpacity
                 onPress={() => {
-                  this.AddChatList_Seller();
+                  this.AddChatList_Seller(this.state.productData.seller);
                   this.props.navigation.navigate('Contact', {
                     data: {...this.state.productData},
                   });

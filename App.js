@@ -12,7 +12,6 @@ import {
   View,
   ActivityIndicator,
   BackHandler,
-  Text,
   StatusBar,
   StyleSheet,
 } from 'react-native';
@@ -20,6 +19,7 @@ import 'react-native-gesture-handler';
 import HomeNavigation from './App/Navigations/homeNavigation';
 import {Provider} from 'react-redux';
 import store from './App/redux/store';
+import {LogBox} from 'react-native';
 
 class App extends Component {
   constructor(props) {
@@ -28,13 +28,16 @@ class App extends Component {
       isReady: true,
     };
   }
+
   componentWillUnmount() {
     BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
   }
   handleBackButton() {
     return true;
   }
+
   async componentDidMount() {
+    // LogBox.ignoreAllLogs();
     BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
     this.setState({isReady: true});
   }

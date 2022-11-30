@@ -15,11 +15,9 @@ import {
 } from 'react-native';
 import {Get_All_Product, Get_Seller_Product} from '../../helper/api';
 import Loader from '../../Components/Loader';
-import {LoginForm} from '../../helper/api';
 import {connect} from 'react-redux';
 import * as userActions from '../../redux/actions/user';
-import {BLACK, GREY, ORANGE, RED, WHITE} from '../../helper/Color';
-import {FONT, SCREEN} from '../../helper/Constant';
+import {SCREEN} from '../../helper/Constant';
 import Server from '../../helper/Server';
 
 class Home extends Component {
@@ -294,6 +292,7 @@ class Home extends Component {
             </View>
           </ScrollView>
         </SafeAreaView>
+        {this.state.loading && <Loader loading={this.state.loading} />}
       </View>
     );
   }

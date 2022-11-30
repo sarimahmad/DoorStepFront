@@ -18,7 +18,7 @@ class UserChats extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: '',
+      data: [],
     };
   }
 
@@ -27,10 +27,10 @@ class UserChats extends Component {
       'focus',
       async () => {
         let chatData = await AsyncStorage.getItem('chatData');
-        console.log('role', this.props.role);
         if (chatData) {
+          console.log('Data', chatData);
           chatData = JSON.parse(chatData);
-          console.log('ChatData', chatData);
+          this.setState({data: chatData});
         } else {
           AsyncStorage.setItem('chatData', '[]');
         }
@@ -39,7 +39,7 @@ class UserChats extends Component {
   }
   componentWillUnmount() {
     // Remove the event listener
-    this.focusListener.remove();
+    this.focusListener();
   }
 
   render() {
@@ -62,18 +62,21 @@ class UserChats extends Component {
           </Text>
         </View>
         <FlatList
-          data={[1, 2, 3]}
+          data={this.state.data}
           keyExtractor={(item, index) => index.toString()}
           renderItem={({item}) => (
             <TouchableOpacity
               onPress={() =>
                 this.props.navigation.navigate('Contact', {
                   data: {
-                    seller: 1,
+                    seller: item,
                   },
                 })
               }
-              style={styles.itemView}></TouchableOpacity>
+              style={styles.itemView}>
+              <Text>{item.username}</Text>
+              <Text>{item.id}</Text>
+            </TouchableOpacity>
           )}
           style={{marginTop: 20}}
         />
