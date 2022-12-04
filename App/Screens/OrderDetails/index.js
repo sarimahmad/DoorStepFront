@@ -32,11 +32,11 @@ class OrderDetails extends Component {
     };
   }
   componentDidMount() {
-    this._unsubscribe = this.props.navigation.addListener('focus', async () => {
-      const data = this.props.route.params.item;
-      this.setState({orderDetails: data});
-      this.setState({statues: data.Product_Status});
-    });
+    // this._unsubscribe = this.props.navigation.addListener('focus', async () => {
+    const data = this.props.route.params.item;
+    this.setState({orderDetails: data});
+    this.setState({statues: data.Product_Status});
+    // });
   }
   async ChanegStatus() {
     let status = this.state.statues.slice(-1).pop();
@@ -110,9 +110,9 @@ class OrderDetails extends Component {
       }
     });
   }
-  componentWillUnmount() {
-    this._unsubscribe();
-  }
+  // componentWillUnmount() {
+  //   this._unsubscribe();
+  // }
 
   render() {
     return (
@@ -332,13 +332,13 @@ class OrderDetails extends Component {
                     <View style={styles.itemView}>
                       <Image
                         style={{
-                          width: SCREEN.width / 3.5,
+                          width: '30%',
                           height: 100,
                           resizeMode: 'stretch',
                         }}
                         source={{uri: `${Server}${val.image}`}}
                       />
-                      <View style={{marginLeft: 23}}>
+                      <View style={{marginLeft: 23, width: '70%'}}>
                         <Text style={{fontWeight: '700', fontSize: 22}}>
                           {val.product && val.product.title}
                         </Text>
@@ -409,7 +409,7 @@ const styles = StyleSheet.create({
   },
   itemView: {
     width: SCREEN.width - 60,
-    height: 125,
+    height: 150,
     backgroundColor: WHITE.dark,
     flexDirection: 'row',
     padding: 15,

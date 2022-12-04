@@ -115,7 +115,7 @@ export default class Cart extends Component {
               height:
                 Platform.OS === 'ios'
                   ? SCREEN.height / 1.7
-                  : SCREEN.height / 1.8,
+                  : SCREEN.height / 1.9,
             }}>
             {this.state.data && this.state.data.length !== 0 ? (
               <FlatList

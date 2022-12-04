@@ -57,7 +57,8 @@ class AddProduct extends Component {
   }
 
   isFormFilled() {
-    let check_price = this.state.price.length < 2 ? false : true;
+    let check_price = Validations.check_only_digit(this.state.price);
+    let check_quantity = Validations.check_only_digit(this.state.quantity);
     let check_title = Validations.checkrequired(this.state.product_Title);
     let check_Category =
       this.state.selectedItem === null || this.state.selectedItem.length === 0
@@ -65,7 +66,7 @@ class AddProduct extends Component {
         : true;
     let check_Image = this.state.product_Img.length === 0 ? false : true;
 
-    if (check_price && check_title && check_Category) {
+    if (check_price && check_title && check_Category && check_quantity) {
       return true;
     }
     if (!check_price) {
@@ -76,6 +77,8 @@ class AddProduct extends Component {
       alert('Invalid Title');
     } else if (!check_Image) {
       alert('Invalid Image');
+    } else if (!check_quantity) {
+      alert('Invalid Quantity');
     }
     return false;
   }
@@ -228,6 +231,13 @@ class AddProduct extends Component {
                   }}
                 />
                 <TouchableOpacity
+                  style={{
+                    height: 60,
+                    width: 60,
+                    position: 'absolute',
+                    bottom: 10,
+                    right: 20,
+                  }}
                   onPress={() => {
                     this.PicMultiple();
                   }}>
@@ -235,9 +245,6 @@ class AddProduct extends Component {
                     style={{
                       width: 60,
                       height: 60,
-                      position: 'absolute',
-                      bottom: 10,
-                      right: 20,
                     }}
                     source={require('../../assets/plusblack.png')}
                   />
@@ -247,6 +254,7 @@ class AddProduct extends Component {
             <View style={{width: SCREEN.width - 40, alignSelf: 'center'}}>
               <Text style={{fontSize: 20, marginTop: 25}}>Price / KG</Text>
               <TextInput
+                keyboardType="numeric"
                 value={this.state.price}
                 onChangeText={val => this.setState({price: val})}
                 style={styles.TextInput}
@@ -315,6 +323,7 @@ class AddProduct extends Component {
               />
               <Text style={{fontSize: 20, marginTop: 25}}>Quantity / KG</Text>
               <TextInput
+                keyboardType="numeric"
                 value={this.state.quantity}
                 onChangeText={val => this.setState({quantity: val})}
                 style={styles.TextInput}

@@ -7,7 +7,7 @@ const checkEmail = email => {
   }
 };
 const checkPassword = password => {
-  if (password.length == 0 || password.length > 5) {
+  if (password.length == 0 || password.length < 5) {
     return false;
   } else {
     return true;
@@ -43,12 +43,17 @@ const check_only_letters = number => {
   return /^[a-zA-Z]+$/.test(number);
 };
 
+const check_only_digit = number => {
+  return /^\d+$/.test(number);
+};
+
 export default {
   checkEmail,
   check_Phone_Required,
   checkPassword,
   checkrequired,
   check_Country_Code,
+  check_only_digit,
   check_Notonly_Digit,
   check_only_letters,
 };

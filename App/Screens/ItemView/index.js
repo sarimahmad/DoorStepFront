@@ -69,6 +69,8 @@ class ItemView extends Component {
           alert('Enter Number of Products');
         } else if (this.state.value < 1) {
           alert('Value should not be less than 1');
+        } else if (this.state.productData.quantity < Number(this.state.value)) {
+          alert('Amout is Greater than Available Product');
         } else {
           oldData.push({...item, NumberofProduct: this.state.value});
           AsyncStorage.setItem('Cart', JSON.stringify(oldData));
@@ -86,7 +88,6 @@ class ItemView extends Component {
       }
     }
   }
-
   async CheckingQuantityForCart() {
     if (this.state.productData.quantity === 0) {
       alert('Out of Stock');
@@ -97,12 +98,12 @@ class ItemView extends Component {
 
   CheckQuantityProduct() {
     if (Number(this.state.value) < 1) {
-      alert('Quantity Should not be less than 0');
+      alert('Quantity Should not be less than 1');
     } else {
       if (this.state.productData.quantity === 0) {
         alert('Out of Stock');
       } else if (this.state.productData.quantity < Number(this.state.value)) {
-        alert('Amout is Greater than Available Product');
+        alert('Amount is Greater than Available Product');
       } else {
         this.props.navigation.navigate('PlaceOrder', {
           data: {...this.state.productData, NumberofProduct: this.state.value},
@@ -211,7 +212,7 @@ class ItemView extends Component {
                       onPress={() => {
                         let number = Number(this.state.value) - 1;
                         if (number < 1) {
-                          alert('Quantity should not be less than 0');
+                          alert('Quantity should not be less than 1');
                         } else {
                           this.setState({value: JSON.stringify(number)});
                         }

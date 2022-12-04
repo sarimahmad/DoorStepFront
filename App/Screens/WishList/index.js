@@ -153,7 +153,7 @@ class WishList extends Component {
                           onPress={() => {
                             let number = Number(this.state.value) - 1;
                             if (number < 1) {
-                              alert('Quantity should not be less than 0');
+                              alert('Quantity should not be less than 1');
                             } else {
                               this.setState({value: JSON.stringify(number)});
                             }

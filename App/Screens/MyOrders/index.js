@@ -234,7 +234,7 @@ class MyOrders extends Component {
                           resizeMode: 'stretch',
                         }}
                         source={{
-                          uri: `/Users/sarimahmad/Documents/DjangoWork/DoorStepFarmer${item.image}`,
+                          uri: `${Server}${item.image}`,
                         }}
                       />
                       <View style={{marginLeft: 23}}>
