@@ -72,8 +72,8 @@ class MyOrders extends Component {
           const orders = response.data.filter(val => {
             return val.delivered === false;
           });
-          this.setState({deliver: delivered});
-          this.setState({Order: orders});
+          this.setState({deliver: delivered.reverse()});
+          this.setState({Order: orders.reverse()});
           this.setState({loading: false});
         } else {
           alert('Some thing went wrong');

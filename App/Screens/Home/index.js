@@ -19,6 +19,7 @@ import {connect} from 'react-redux';
 import * as userActions from '../../redux/actions/user';
 import {SCREEN} from '../../helper/Constant';
 import Server from '../../helper/Server';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 class Home extends Component {
   constructor(props) {
@@ -36,7 +37,7 @@ class Home extends Component {
   }
 
   async componentDidMount() {
-    const token = this.props.userToken;
+    let token = this.props.userToken;
     this.setState({loading: true});
     let seller_data = {All: [], Fruits: [], vegetables: []};
     this._unsubscribe = this.props.navigation.addListener('focus', async () => {
@@ -53,7 +54,6 @@ class Home extends Component {
             }
           })
         : await Get_Seller_Product(token).then(response => {
-            console.log(response);
             if (response && response.status === 200) {
               seller_data.All = response.data;
               seller_data.Fruits = response.data.filter(val => {

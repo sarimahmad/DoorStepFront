@@ -27,16 +27,17 @@ class OrderDetails extends Component {
       selectedCategory: 0,
       loading: false,
       statues: [],
+      star: 0,
       value: 0,
       reviewText: '',
     };
   }
   componentDidMount() {
-    // this._unsubscribe = this.props.navigation.addListener('focus', async () => {
-    const data = this.props.route.params.item;
-    this.setState({orderDetails: data});
-    this.setState({statues: data.Product_Status});
-    // });
+    this._unsubscribe = this.props.navigation.addListener('focus', async () => {
+      const data = this.props.route.params.item;
+      this.setState({orderDetails: data});
+      this.setState({statues: data.Product_Status});
+    });
   }
   async ChanegStatus() {
     let status = this.state.statues.slice(-1).pop();
@@ -97,22 +98,27 @@ class OrderDetails extends Component {
     let data = {
       product: this.state.orderDetails && this.state.orderDetails.product[0].id,
       Review: this.state.reviewText,
+      star: this.state.star,
     };
     console.log(data);
-
+    this.setState({loading: true});
     await AddReview(data, token).then(response => {
-      console.log(response);
       if (response && response.status === 200) {
         alert('review Added');
+        this.setState({loading: false});
+        this.props.navigation.navigate('MainHome', {
+          screen: 'Home',
+        });
         this.setState({lastRefresh: true});
       } else {
+        this.setState({loading: false});
         alert('Some thing went wrong');
       }
     });
   }
-  // componentWillUnmount() {
-  //   this._unsubscribe();
-  // }
+  componentWillUnmount() {
+    this._unsubscribe();
+  }
 
   render() {
     return (
@@ -385,6 +391,28 @@ class OrderDetails extends Component {
                           source={require('../../assets/goo.png')}
                         />
                       </TouchableOpacity>
+                
+                      <View style={{flexDirection: 'row', marginBottom: 20}}>
+                        {[1, 2, 3, 4, 5].map(val => (
+                          <TouchableOpacity
+                            onPress={() => {
+                              this.setState({star: val});
+                            }}>
+                            {this.state.star >= val ? (
+                              <Image
+                                style={styles.greyStar}
+                                source={require('../../assets/redstart.png')}
+                              />
+                            ) : (
+                              <Image
+                                style={styles.greyStar}
+                                source={require('../../assets/greystart.png')}
+                              />
+                            )}
+                          </TouchableOpacity>
+                        ))}
+                      </View>
+           
                     </View>
                   )}
               </View>
@@ -429,6 +457,11 @@ const styles = StyleSheet.create({
     borderBottomColor: GREY.light,
     fontSize: 17,
     fontWeight: '700',
+  },
+  greyStar: {
+    width: 25,
+    height: 25,
+    marginRight: 10,
   },
   Line: {
     width: 4,

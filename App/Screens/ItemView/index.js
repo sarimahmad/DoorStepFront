@@ -1,22 +1,22 @@
-import React, {Component} from 'react';
+/* eslint-disable prettier/prettier */
+import React, { Component } from 'react';
 import {
   View,
   Text,
   TextInput,
   StyleSheet,
   Image,
-  FlatList,
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
 import Loader from '../../Components/Loader';
-import {Get_all_Review, AddReview, deleteProductapi} from '../../helper/api';
-import {connect} from 'react-redux';
+import { Get_all_Review, AddReview, deleteProductapi } from '../../helper/api';
+import { connect } from 'react-redux';
 import * as userActions from '../../redux/actions/user';
-import {isIphoneXorAbove} from '../../helper/Constant';
+import { isIphoneXorAbove } from '../../helper/Constant';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Server from '../../helper/Server';
-import {BLACK} from '../../helper/Color';
+import { BLACK } from '../../helper/Color';
 class ItemView extends Component {
   constructor(props) {
     super(props);
@@ -30,6 +30,7 @@ class ItemView extends Component {
       all_Review: '',
       reviewText: '',
       value: '1',
+      totalStart: 0,
       showReview: false,
     };
   }
@@ -37,22 +38,34 @@ class ItemView extends Component {
   async componentDidMount() {
     const data = this.props.route.params.data;
     this.all_Review(data.id);
-    this.setState({productData: data});
+    this.setState({ productData: data });
+  }
+
+  startCalculator(data) {
+    let starArray = data.map(val => val.star);
+    const sum = starArray.reduce((partialSum, a) => partialSum + a, 0);
+    let itemstarValue = sum / starArray.length;
+    console.log(itemstarValue);
+    itemstarValue = parseInt(itemstarValue);
+    console.log(itemstarValue);
+    if (itemstarValue > 5) itemstarValue = 5;
+    this.setState({ totalStart: itemstarValue });
   }
 
   async all_Review(data) {
     const token = this.props.userToken;
-    this.setState({loading: true});
+    this.setState({ loading: true });
     await Get_all_Review(data, token).then(response => {
       if (response && response.status === 200) {
-        this.setState({all_Review: response.data});
-        this.setState({loading: false});
+        this.setState({ all_Review: response.data });
+        this.startCalculator(response.data);
+        this.setState({ loading: false });
       } else {
-        this.setState({loading: false});
+        this.setState({ loading: false });
         alert('Some thing went wrong');
       }
     });
-    this.setState({loading: false});
+    this.setState({ loading: false });
   }
 
   async AddCart(item) {
@@ -72,7 +85,7 @@ class ItemView extends Component {
         } else if (this.state.productData.quantity < Number(this.state.value)) {
           alert('Amout is Greater than Available Product');
         } else {
-          oldData.push({...item, NumberofProduct: this.state.value});
+          oldData.push({ ...item, NumberofProduct: this.state.value });
           AsyncStorage.setItem('Cart', JSON.stringify(oldData));
           alert('Item Added');
         }
@@ -82,7 +95,7 @@ class ItemView extends Component {
         alert('Enter Number of Products');
       } else {
         let data = [];
-        data.push({...item, NumberofProduct: this.state.value});
+        data.push({ ...item, NumberofProduct: this.state.value });
         AsyncStorage.setItem('Cart', JSON.stringify(data));
         alert('Item Added to Cart');
       }
@@ -106,7 +119,7 @@ class ItemView extends Component {
         alert('Amount is Greater than Available Product');
       } else {
         this.props.navigation.navigate('PlaceOrder', {
-          data: {...this.state.productData, NumberofProduct: this.state.value},
+          data: { ...this.state.productData, NumberofProduct: this.state.value },
         });
       }
     }
@@ -133,9 +146,9 @@ class ItemView extends Component {
     };
     await AddReview(data, token).then(response => {
       if (response && response.status === 200) {
-        this.setState({reviewText: ''});
+        this.setState({ reviewText: '' });
         alert('Review Added Sucessfully');
-        this.setState({lastRefresh: true});
+        this.setState({ lastRefresh: true });
         this.all_Review(this.props.route.params.data.id);
       } else {
         alert('Some thing went wrong');
@@ -156,7 +169,7 @@ class ItemView extends Component {
   render() {
     return (
       <View style={styles.wrapperView}>
-        <View style={{flex: 0.4}}>
+        <View style={{ flex: 0.4 }}>
           <Image
             style={{
               width: '100%',
@@ -183,9 +196,9 @@ class ItemView extends Component {
         </View>
 
         <View style={styles.ItemView}>
-          <ScrollView style={{flex: 1}} bounces={false}>
-            <View style={{paddingHorizontal: 30}}>
-              <Text style={{fontSize: 27, marginTop: 30, fontWeight: '700'}}>
+          <ScrollView style={{ flex: 1 }} bounces={false}>
+            <View style={{ paddingHorizontal: 30 }}>
+              <Text style={{ fontSize: 27, marginTop: 30, fontWeight: '700' }}>
                 {this.state.productData.title}
               </Text>
               <View
@@ -194,10 +207,10 @@ class ItemView extends Component {
                   justifyContent: 'space-between',
                   marginTop: 10,
                 }}>
-                <Text style={{fontSize: 22}}>
+                <Text style={{ fontSize: 22 }}>
                   PKR {this.state.productData.price} / KG
                 </Text>
-                <Text style={{fontSize: 22}}>5 / 5</Text>
+                <Text style={{ fontSize: 22 }}>5 / 5</Text>
               </View>
               {this.props.role === 'Buyer' && (
                 <View
@@ -208,13 +221,13 @@ class ItemView extends Component {
                   }}>
                   <View style={styles.btn}>
                     <Text
-                      style={{fontSize: 20}}
+                      style={{ fontSize: 20 }}
                       onPress={() => {
                         let number = Number(this.state.value) - 1;
                         if (number < 1) {
                           alert('Quantity should not be less than 1');
                         } else {
-                          this.setState({value: JSON.stringify(number)});
+                          this.setState({ value: JSON.stringify(number) });
                         }
                       }}>
                       -
@@ -228,7 +241,7 @@ class ItemView extends Component {
                       <TextInput
                         value={this.state.value}
                         keyboardType="numeric"
-                        onChangeText={val => this.setState({value: val})}
+                        onChangeText={val => this.setState({ value: val })}
                         style={{
                           width: '50%',
                           height: 43,
@@ -239,22 +252,22 @@ class ItemView extends Component {
                       <Text>KG</Text>
                     </View>
                     <Text
-                      style={{fontSize: 20}}
+                      style={{ fontSize: 20 }}
                       onPress={() => {
                         let number = Number(this.state.value) + 1;
-                        this.setState({value: JSON.stringify(number)});
+                        this.setState({ value: JSON.stringify(number) });
                       }}>
                       +
                     </Text>
                   </View>
                   <TouchableOpacity
                     onPress={() => this.CheckingQuantityForCart()}
-                    style={[styles.btn, {backgroundColor: '#228B22'}]}>
+                    style={[styles.btn, { backgroundColor: '#228B22' }]}>
                     <Image
-                      style={{width: 17, height: 20}}
+                      style={{ width: 17, height: 20 }}
                       source={require('../../assets/whitecart.png')}
                     />
-                    <Text style={{color: 'white', fontSize: 12}}>
+                    <Text style={{ color: 'white', fontSize: 12 }}>
                       ADD TO CART
                     </Text>
                   </TouchableOpacity>
@@ -273,24 +286,51 @@ class ItemView extends Component {
                     alignSelf: 'center',
                     borderRadius: 20,
                   }}>
-                  <Text style={{color: 'white', fontWeight: '600'}}>
+                  <Text style={{ color: 'white', fontWeight: '600' }}>
                     PLACE ORDER
                   </Text>
                 </TouchableOpacity>
               )}
 
-              <Text style={{fontSize: 27, fontWeight: '700', marginTop: 10}}>
+              <Text style={{ fontSize: 27, fontWeight: '700', marginTop: 10 }}>
                 Description
               </Text>
-              <Text style={{fontSize: 22, marginVertical: 10}}>
+              <Text style={{ fontSize: 22, marginVertical: 10 }}>
                 {this.state.productData.product_description}
               </Text>
+
+              <Text style={{ fontSize: 27, fontWeight: '700', marginTop: 10 }}>
+                Reviews
+              </Text>
+
+              {this.state.totalStart !== 0 ? <View style={{ flexDirection: 'row', marginVertical: 20 }}>
+                {Array(this.state.totalStart).fill().map(val => (
+                  <Image
+                    style={styles.greyStar}
+                    source={require('../../assets/redstart.png')}
+                  />
+
+                ))
+                }
+              </View> :   <Text style={{ fontSize: 22}}>
+                   No Reviews
+                  </Text>}
+              {this.props.role === 'Seller' ? (
+                <>
+                  <Text style={{ fontSize: 27, fontWeight: '700' }}>
+                    Quantity
+                  </Text>
+                  <Text style={{ fontSize: 22, marginVertical: 10 }}>
+                    {this.state.productData.quantity}
+                  </Text>
+                </>
+              ) : null}
 
               <TouchableOpacity
                 onPress={() => {
                   this.AddChatList_Seller(this.state.productData.seller);
                   this.props.navigation.navigate('Contact', {
-                    data: {...this.state.productData},
+                    data: { ...this.state.productData },
                   });
                 }}
                 style={{
@@ -300,7 +340,7 @@ class ItemView extends Component {
                 }}>
                 {this.props.role === 'Buyer' && (
                   <Image
-                    style={{width: 26, height: 26, marginRight: 20}}
+                    style={{ width: 26, height: 26, marginRight: 20 }}
                     source={require('../../assets/contact.png')}
                   />
                 )}
@@ -333,7 +373,7 @@ class ItemView extends Component {
                   </View>
                 ) : (
                   <Text
-                    style={{fontSize: 20, fontWeight: '800', color: '#C60404'}}>
+                    style={{ fontSize: 20, fontWeight: '800', color: '#C60404' }}>
                     Contact Seller
                   </Text>
                 )}
@@ -348,7 +388,7 @@ class ItemView extends Component {
               }}
             />
 
-            <View style={{paddingHorizontal: 35, marginBottom: 30}}>
+            <View style={{ paddingHorizontal: 35, marginBottom: 30 }}>
               <Text style={styles.BoldText}>Reccomended reviews</Text>
               {this.state.all_Review && this.state.all_Review.length !== 0 ? (
                 this.state.all_Review
@@ -371,7 +411,7 @@ class ItemView extends Component {
                           }}
                           source={require('../../assets/profile.png')}
                         />
-                        <Text style={[styles.BoldText, {fontWeight: '600'}]}>
+                        <Text style={[styles.BoldText, { fontWeight: '600' }]}>
                           {val.user.username}
                         </Text>
                       </View>
@@ -394,7 +434,7 @@ class ItemView extends Component {
               {this.state.all_Review.length !== this.state.reviews_Size && (
                 <TouchableOpacity
                   onPress={() =>
-                    this.setState({reviews_Size: this.state.all_Review.length})
+                    this.setState({ reviews_Size: this.state.all_Review.length })
                   }
                   style={{
                     width: '100%',
@@ -448,6 +488,11 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: isIphoneXorAbove ? 0 : 30,
   },
+  greyStar: {
+    width: 25,
+    height: 25,
+    marginRight: 10,
+  },
   lastItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -474,7 +519,7 @@ function mapStateToProps(state, props) {
 const mapDispatchToProps = dispatch => {
   return {
     callApi: (user, access_token, role) =>
-      dispatch(userActions.setUser({user, access_token, role})),
+      dispatch(userActions.setUser({ user, access_token, role })),
   };
 };
 
