@@ -42,14 +42,18 @@ class ItemView extends Component {
   }
 
   startCalculator(data) {
-    let starArray = data.map(val => val.star);
-    const sum = starArray.reduce((partialSum, a) => partialSum + a, 0);
-    let itemstarValue = sum / starArray.length;
-    console.log(itemstarValue);
-    itemstarValue = parseInt(itemstarValue);
-    console.log(itemstarValue);
-    if (itemstarValue > 5) itemstarValue = 5;
-    this.setState({ totalStart: itemstarValue });
+    console.log("data",data)
+    if (data.length !==0){
+      let starArray = data.map(val => val.star);
+      const sum = starArray.reduce((partialSum, a) => partialSum + a, 0);
+      let itemstarValue = sum / starArray.length;
+      itemstarValue = parseInt(itemstarValue);
+      if (itemstarValue > 5) itemstarValue = 5;
+      this.setState({ totalStart: itemstarValue });
+    }else{
+      this.setState({ totalStart: [] });
+    }
+
   }
 
   async all_Review(data) {
@@ -303,7 +307,7 @@ class ItemView extends Component {
                 Reviews
               </Text>
 
-              {this.state.totalStart !== 0 ? <View style={{ flexDirection: 'row', marginVertical: 20 }}>
+              {this.state.totalStart.length !== 0 ? <View style={{ flexDirection: 'row', marginVertical: 20 }}>
                 {Array(this.state.totalStart).fill().map(val => (
                   <Image
                     style={styles.greyStar}
