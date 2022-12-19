@@ -17,34 +17,42 @@ import {connect} from 'react-redux';
 import * as userActions from '../../redux/actions/user';
 import {RED, WHITE} from '../../helper/Color';
 import {GiftedChat} from 'react-native-gifted-chat';
+import {All_Messages} from '../../helper/api';
 
 const Contact = props => {
+  
   const [Messages, setMessages] = useState([]);
   const [username, setuserName] = useState([]);
 
+  const GetAllChats = async id => {
+    await All_Messages(id).then(response => {
+      if (response.status === 200) {
+        setMessages(response.data.reverse());
+      }
+    });
+  };
+
   useEffect(() => {
     const data = props.route.params.data;
+    global.ws = new WebSocket(`${ServerSocket}/ws/chat/${data.room_id}/`);
+    GetAllChats(data.room_id);
     setuserName(props.userDetail.username);
-    let id = JSON.stringify(data.seller.id);
-    console.log(id);
-    global.ws = new WebSocket(`${ServerSocket}/ws/chat/${id}/`);
+
+
     ws.onopen = () => {
       console.log('we are connected');
     };
-    let val = 4;
 
     ws.onmessage = function (data) {
       let messageInfo = JSON.parse(data.data);
       console.log('Receice', messageInfo);
 
       let obj = {
-        _id: val++,
+        _id: '1',
         text: messageInfo.message,
         createdAt: new Date(),
         user: {
-          _id: messageInfo.username,
-          name: 'React Native',
-          avatar: 'https://placeimg.com/140/140/any',
+          _id: messageInfo.user,
         },
       };
 
@@ -53,53 +61,42 @@ const Contact = props => {
           GiftedChat.append(previousMessages, obj),
         );
     };
-    setMessages([
-      {
-        _id: 1,
-        text: 'Hell',
-        createdAt: new Date(),
-        user: {
-          _id: 22,
-          name: 'React Native',
-          avatar: 'https://placeimg.com/140/140/any',
-        },
-      },
-      {
-        _id: 2,
-        text: 'Hye',
-        createdAt: new Date(),
-        user: {
-          _id: 27,
-          name: 'React Native',
-          avatar: 'https://placeimg.com/140/140/any',
-        },
-      },
-      {
-        _id: 3,
-        text: 'Where are You',
-        createdAt: new Date(),
-        user: {
-          _id: 22,
-          name: 'React Native',
-          avatar: 'https://placeimg.com/140/140/any',
-        },
-      },
-    ]);
+    // setMessages([
+    //   {
+    //     _id: 1,
+    //     text: 'Hell',
+    //     createdAt: new Date(),
+    //     user: {
+    //       _id: 21,
+    //     },
+    //   },
+    //   {
+    //     _id: 2,
+    //     text: 'Hye',
+    //     createdAt: new Date(),
+    //     user: {
+    //       _id: 27,
+    //     },
+    //   },
+    //   {
+    //     _id: 3,
+    //     text: 'Where are You',
+    //     createdAt: new Date(),
+    //     user: {
+    //       _id: 21,
+    //     },
+    //   },
+    // ]);
   }, []);
 
   const onSend = useCallback((messages = []) => {
-    const msg = messages[0];
-
     let data = {
       message: messages[0].text,
-      username: props.userDetail.id,
-      value: 'sender',
+      user: props.userDetail.id,
+      room_id: props.route.params.data.room_id,
     };
     ws.send(JSON.stringify(data));
-    // console.log("SendBy",props.userDetail.id)
-    // console.log("SendTo",props.route.params.data.seller)
 
-    // console.log("Sent Message",msg)
   }, []);
 
   return (

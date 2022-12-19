@@ -114,7 +114,6 @@ export async function Get_All_Product(token) {
     headers: {
       'Content-Type': 'application/json',
       Accept: 'application/json',
-      Authorization: `Bearer ${token}`,
     },
   };
 
@@ -326,6 +325,46 @@ export async function EditProductApi(id, data) {
       // Authorization: `Bearer ${token}`,
     },
     data: data,
+  };
+  const GetResponse = await axios(config)
+    .then(function (response) {
+      return response;
+    })
+    .catch(function (error) {
+      return error.response;
+    });
+  return GetResponse;
+}
+
+export async function All_Chats(token) {
+  var config = {
+    method: 'get',
+    url: `${Server}/Chat_Room/AllChats/`,
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  };
+  const GetResponse = await axios(config)
+    .then(function (response) {
+      return response;
+    })
+    .catch(function (error) {
+      return error.response;
+    });
+  return GetResponse;
+}
+
+export async function All_Messages(id) {
+  var config = {
+    method: 'get',
+    url: `${Server}/Chat/${id}/`,
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+      // Authorization: `Bearer ${token}`,
+    },
   };
   const GetResponse = await axios(config)
     .then(function (response) {

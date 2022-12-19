@@ -13,6 +13,7 @@ import {connect} from 'react-redux';
 import * as userActions from '../../redux/actions/user';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ServerSocket from '../../helper/Socket';
+import {All_Chats} from '../../helper/api';
 
 class UserChats extends Component {
   constructor(props) {
@@ -23,24 +24,24 @@ class UserChats extends Component {
   }
 
   async componentDidMount() {
-    this.focusListener = this.props.navigation.addListener(
-      'focus',
-      async () => {
-        let chatData = await AsyncStorage.getItem('chatData');
-        if (chatData) {
-          console.log('Data', chatData);
-          chatData = JSON.parse(chatData);
-          this.setState({data: chatData});
-        } else {
-          AsyncStorage.setItem('chatData', '[]');
-        }
-      },
-    );
+    // this.focusListener = this.props.navigation.addListener(
+    //   'focus',
+    //   async () => {
+
+    //   },
+    // );
+    await All_Chats(this.props.userToken).then(response => {
+      if (response.status === 200) {
+        this.setState({data: response.data.data});
+      } else {
+        alert('Something Went Wrong');
+      }
+    });
   }
-  componentWillUnmount() {
-    // Remove the event listener
-    this.focusListener();
-  }
+  // componentWillUnmount() {
+  //   // Remove the event listener
+  //   this.focusListener();
+  // }
 
   render() {
     return (
@@ -69,13 +70,13 @@ class UserChats extends Component {
               onPress={() =>
                 this.props.navigation.navigate('Contact', {
                   data: {
-                    seller: item,
+                    room_id: item.room_id,
                   },
                 })
               }
               style={styles.itemView}>
-              <Text>{item.username}</Text>
-              <Text>{item.id}</Text>
+              <Text>{item.person[0].username}</Text>
+              <Text>{item.person[1].username}</Text>
             </TouchableOpacity>
           )}
           style={{marginTop: 20}}
