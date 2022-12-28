@@ -36,41 +36,48 @@ class Home extends Component {
     };
   }
 
-  async componentDidMount() {
+  async ApiCalling() {
     let token = this.props.userToken;
     this.setState({loading: true});
     let seller_data = {All: [], Fruits: [], vegetables: []};
-    this._unsubscribe = this.props.navigation.addListener('focus', async () => {
-      this.props.role === 'Buyer'
-        ? await Get_All_Product(token).then(response => {
-            if (response && response.status === 200) {
-              this.setState({
-                all_data: response.data,
-                SearchedData: response.data.All,
-              });
-              this.setState({loading: false});
-            } else {
-              alert('Some thing went wrong');
-            }
-          })
-        : await Get_Seller_Product(token).then(response => {
-            if (response && response.status === 200) {
-              seller_data.All = response.data;
-              seller_data.Fruits = response.data.filter(val => {
-                return val.category === 'Fruits';
-              });
-              seller_data.vegetables = response.data.filter(val => {
-                return val.category === 'Vegetables';
-              });
-              this.setState({
-                all_data: seller_data,
-                SearchedData: seller_data.All,
-              });
-              this.setState({loading: false});
-            } else {
-              alert('Some thing went wrong');
-            }
+    if (this.props.role === 'Buyer') {
+      await Get_All_Product(token).then(response => {
+        if (response && response.status === 200) {
+          this.setState({
+            all_data: response.data,
+            SearchedData: response.data.All,
           });
+          this.setState({loading: false});
+        } else {
+          alert('Some thing went wrong');
+        }
+      });
+    } else {
+      await Get_Seller_Product(token).then(response => {
+        if (response && response.status === 200) {
+          seller_data.All = response.data;
+          seller_data.Fruits = response.data.filter(val => {
+            return val.category === 'Fruits';
+          });
+          seller_data.vegetables = response.data.filter(val => {
+            return val.category === 'Vegetables';
+          });
+          this.setState({
+            all_data: seller_data,
+            SearchedData: seller_data.All,
+          });
+          this.setState({loading: false});
+        } else {
+          alert('Some thing went wrong');
+        }
+      });
+    }
+    this.setState({loading: false});
+  }
+
+  async componentDidMount() {
+    this._unsubscribe = this.props.navigation.addListener('focus', async () => {
+      this.ApiCalling();
     });
   }
   componentWillUnmount() {

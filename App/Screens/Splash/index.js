@@ -32,7 +32,6 @@ class Splash extends Component {
         );
         this.props.navigation.navigate('Home');
       } else {
-        console.log('Hello');
         this.props.navigation.navigate('Login');
       }
     }, 1000);
