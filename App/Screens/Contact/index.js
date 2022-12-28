@@ -20,7 +20,6 @@ import {GiftedChat} from 'react-native-gifted-chat';
 import {All_Messages} from '../../helper/api';
 
 const Contact = props => {
-  
   const [Messages, setMessages] = useState([]);
   const [username, setuserName] = useState([]);
 
@@ -37,7 +36,6 @@ const Contact = props => {
     global.ws = new WebSocket(`${ServerSocket}/ws/chat/${data.room_id}/`);
     GetAllChats(data.room_id);
     setuserName(props.userDetail.username);
-
 
     ws.onopen = () => {
       console.log('we are connected');
@@ -96,7 +94,6 @@ const Contact = props => {
       room_id: props.route.params.data.room_id,
     };
     ws.send(JSON.stringify(data));
-
   }, []);
 
   return (

@@ -42,15 +42,15 @@ class ItemView extends Component {
   }
 
   startCalculator(data) {
-    console.log("data",data)
     if (data.length !==0){
       let starArray = data.map(val => val.star);
+      console.log(starArray)
       const sum = starArray.reduce((partialSum, a) => partialSum + a, 0);
       let itemstarValue = sum / starArray.length;
       itemstarValue = parseInt(itemstarValue);
       if (itemstarValue > 5) itemstarValue = 5;
       this.setState({ totalStart: itemstarValue });
-    }else{
+    } else {
       this.setState({ totalStart: [] });
     }
 
