@@ -133,7 +133,6 @@ class AddProduct extends Component {
         this.props.route.params.ProductInfo.id,
         formData,
       ).then(response => {
-        console.log(response);
         if (response && response.status === 200) {
           this.setState({loading: false});
           this.props.navigation.navigate('MainHome', {

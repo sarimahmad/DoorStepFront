@@ -85,7 +85,6 @@ class SignUp extends Component {
     console.log(dataToSend);
     if (this.isFormFilled()) {
       await SignUpform(dataToSend).then(response => {
-        console.log(response);
         if (response.status === 200) {
           this.setState({loading: false});
           this.props.callApi(

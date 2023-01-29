@@ -7,36 +7,47 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import React, {Component} from 'react';
-import {WHITE} from '../../helper/Color';
-import {isIphoneXorAbove, SCREEN} from '../../helper/Constant';
+import {BLACK, GREY, WHITE} from '../../helper/Color';
+import {FONT, isIphoneXorAbove, SCREEN} from '../../helper/Constant';
 import {connect} from 'react-redux';
 import * as userActions from '../../redux/actions/user';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ServerSocket from '../../helper/Socket';
 import {All_Chats} from '../../helper/api';
+import Loader from '../../Components/Loader';
+
+const colors= [
+  '#994F14','#DA291C','#FFCD00','#007A33','#EB9CA8', '#7C878E',
+  '#8A004F','#000000','#10069F','#00a3e0','#4CC1A1'
+]
 
 class UserChats extends Component {
   constructor(props) {
     super(props);
     this.state = {
       data: [],
+      loading: false,
     };
   }
 
-  async componentDidMount() {
-    // this.focusListener = this.props.navigation.addListener(
-    //   'focus',
-    //   async () => {
-
-    //   },
-    // );
+  async Getchats() {
+    this.setState({loading: true});
     await All_Chats(this.props.userToken).then(response => {
       if (response.status === 200) {
         this.setState({data: response.data.data});
+        this.setState({loading: false});
       } else {
         alert('Something Went Wrong');
+        this.setState({loading: false});
       }
     });
+    this.setState({loading: false});
+  }
+
+  async componentDidMount() {
+    // this.focusListener = this.props.navigation.addListener('focus', () => {
+      this.Getchats();
+    // });
   }
   // componentWillUnmount() {
   //   // Remove the event listener
@@ -71,16 +82,20 @@ class UserChats extends Component {
                 this.props.navigation.navigate('Contact', {
                   data: {
                     room_id: item.room_id,
+                    seller_name: item.person[1].username,
                   },
                 })
               }
               style={styles.itemView}>
-              <Text>{item.person[0].username}</Text>
-              <Text>{item.person[1].username}</Text>
+              <Text style={styles.UserNameTxt}>{item.person[0].username}</Text>
+              <Text style={[styles.UserNameTxt]}>
+                {item.person[1].username}
+              </Text>
             </TouchableOpacity>
           )}
           style={{marginTop: 20}}
         />
+        {this.state.loading && <Loader loading={this.state.loading} />}
       </View>
     );
   }
@@ -91,7 +106,7 @@ const styles = StyleSheet.create({
   },
   headerView: {
     width: SCREEN.width,
-    height: isIphoneXorAbove ? 80 : 70,
+    height: isIphoneXorAbove ? 80 : 60,
     backgroundColor: '#C60404',
     flexDirection: 'row',
     paddingHorizontal: 20,
@@ -99,11 +114,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   itemView: {
-    width: '100%',
+    width: '90%',
+    alignSelf: 'center',
+    borderRadius: 20,
     height: 70,
-    backgroundColor: WHITE.dark,
+    backgroundColor: GREY.numberColor,
     flexDirection: 'row',
-    padding: 15,
+    alignItems: 'center',
+    paddingHorizontal: 30,
     marginBottom: 20,
     justifyContent: 'space-between',
     shadowColor: '#000',
@@ -111,6 +129,11 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.5,
     shadowRadius: 4,
     elevation: 5,
+  },
+  UserNameTxt: {
+    fontWeight: '800',
+    fontSize: 20,
+    color: BLACK.dark,
   },
 });
 

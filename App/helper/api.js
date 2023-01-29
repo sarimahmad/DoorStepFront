@@ -355,6 +355,24 @@ export async function All_Chats(token) {
     });
   return GetResponse;
 }
+export async function Create_Room(user1, user2) {
+  var config = {
+    method: 'post',
+    url: `${Server}/Chat_Room/user1/${user1}/user2/${user2}/`,
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    },
+  };
+  const GetResponse = await axios(config)
+    .then(function (response) {
+      return response;
+    })
+    .catch(function (error) {
+      return error.response;
+    });
+  return GetResponse;
+}
 
 export async function All_Messages(id) {
   var config = {

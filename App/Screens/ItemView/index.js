@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 /* eslint-disable prettier/prettier */
 import React, { Component } from 'react';
 import {
@@ -10,7 +11,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import Loader from '../../Components/Loader';
-import { Get_all_Review, AddReview, deleteProductapi } from '../../helper/api';
+import { Get_all_Review, AddReview, deleteProductapi, Create_Room } from '../../helper/api';
 import { connect } from 'react-redux';
 import * as userActions from '../../redux/actions/user';
 import { isIphoneXorAbove } from '../../helper/Constant';
@@ -66,7 +67,7 @@ class ItemView extends Component {
         this.setState({ loading: false });
       } else {
         this.setState({ loading: false });
-        alert('Some thing went wrong');
+        alert('Some thing went wrong Review');
       }
     });
     this.setState({ loading: false });
@@ -129,18 +130,21 @@ class ItemView extends Component {
     }
   }
 
-  async AddChatList_Seller(item) {
-    let chatData = await AsyncStorage.getItem('chatData');
-    if (chatData) {
-      chatData = JSON.parse(chatData);
-      if (chatData.filter(e => e.id === item.id).length === 0) {
-        chatData.push(item);
-        AsyncStorage.setItem('chatData', JSON.stringify(chatData));
+  async AddChatList_Seller() {
+    await Create_Room(this.props.userDetail.id,this.state.productData.seller.id).then(response=>{
+      if (response.status === 200){
+
+        this.props.navigation.navigate('Contact', {
+          data: {
+            room_id: response.data.room,
+            seller_name: this.props.route.params.data.seller.username,
+
+          },
+        });
+      }else {
+        alert("Something Went Wrong Message")
       }
-    } else {
-      let data = [item];
-      AsyncStorage.setItem('chatData', JSON.stringify(data));
-    }
+    });
   }
   async addReview() {
     const token = this.props.userToken;
@@ -331,12 +335,7 @@ class ItemView extends Component {
               ) : null}
 
               <TouchableOpacity
-                onPress={() => {
-                  this.AddChatList_Seller(this.state.productData.seller);
-                  this.props.navigation.navigate('Contact', {
-                    data: { ...this.state.productData },
-                  });
-                }}
+
                 style={{
                   flexDirection: 'row',
                   alignItems: 'center',
@@ -377,6 +376,9 @@ class ItemView extends Component {
                   </View>
                 ) : (
                   <Text
+                  onPress={() => {
+                    this.AddChatList_Seller();
+                  }}
                     style={{ fontSize: 20, fontWeight: '800', color: '#C60404' }}>
                     Contact Seller
                   </Text>

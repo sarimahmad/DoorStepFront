@@ -56,7 +56,6 @@ class OrderDetails extends Component {
         status: status_id,
       };
       await ChangeStatus(data).then(response => {
-        console.log(response);
         if (response && response.status === 200) {
           this.setState({loading: false});
           this.props.navigation.goBack();
@@ -79,7 +78,6 @@ class OrderDetails extends Component {
     console.log(id, data);
     if (status.length === 0) {
       await deleteOrderapi(id, data).then(response => {
-        console.log(response);
         if (response && response.status === 200) {
           this.setState({loading: false});
           this.props.navigation.goBack();

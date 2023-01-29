@@ -41,7 +41,6 @@ class Account extends Component {
       this.state.username.length !== 0
     ) {
       await UpdateProfileApi(data, this.props.userDetail.id).then(response => {
-        console.log(response);
         if (response && response.status === 200) {
           this.props.callApi(response.data.data);
           this.setState({editProfile: false});
@@ -66,7 +65,6 @@ class Account extends Component {
       this.state.old_password.length !== 0
     ) {
       await ChangePasswordApi(data, this.props.userDetail.id).then(response => {
-        console.log(response);
         if (response && response.status === 200) {
           this.setState({changePassword: false});
           alert('Password has been changed');

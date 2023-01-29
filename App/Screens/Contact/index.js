@@ -18,24 +18,31 @@ import * as userActions from '../../redux/actions/user';
 import {RED, WHITE} from '../../helper/Color';
 import {GiftedChat} from 'react-native-gifted-chat';
 import {All_Messages} from '../../helper/api';
+import Loader from '../../Components/Loader';
 
 const Contact = props => {
   const [Messages, setMessages] = useState([]);
   const [username, setuserName] = useState([]);
+  const [loading, setloading] = useState(false);
 
   const GetAllChats = async id => {
+    setloading(true);
     await All_Messages(id).then(response => {
       if (response.status === 200) {
         setMessages(response.data.reverse());
+        setloading(false);
+      } else {
+        alert('Something Went Wrong');
+        setloading(false);
       }
     });
+    setloading(false);
   };
-
+  const {data} = props.route.params;
   useEffect(() => {
-    const data = props.route.params.data;
+    // const data = props.route.params.data;
     global.ws = new WebSocket(`${ServerSocket}/ws/chat/${data.room_id}/`);
     GetAllChats(data.room_id);
-    setuserName(props.userDetail.username);
 
     ws.onopen = () => {
       console.log('we are connected');
@@ -125,9 +132,11 @@ const Contact = props => {
               />
             </TouchableOpacity>
 
-            <Text style={{fontSize: 20, color: WHITE.dark}}>{props.role}</Text>
+            <Text style={{fontSize: 20, color: WHITE.dark}}>
+              {data.seller_name}
+            </Text>
           </View>
-          <Image
+          {/* <Image
             style={{
               width: 20,
               height: 25,
@@ -135,7 +144,7 @@ const Contact = props => {
               marginRight: 20,
             }}
             source={require('../../assets/phone2.png')}
-          />
+          /> */}
         </SafeAreaView>
       </View>
       <GiftedChat
@@ -145,6 +154,7 @@ const Contact = props => {
           _id: props.userDetail.id,
         }}
       />
+      {loading && <Loader loading={loading} />}
     </View>
   );
 };
