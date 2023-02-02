@@ -16,10 +16,19 @@ import ServerSocket from '../../helper/Socket';
 import {All_Chats} from '../../helper/api';
 import Loader from '../../Components/Loader';
 
-const colors= [
-  '#994F14','#DA291C','#FFCD00','#007A33','#EB9CA8', '#7C878E',
-  '#8A004F','#000000','#10069F','#00a3e0','#4CC1A1'
-]
+const colors = [
+  '#994F14',
+  '#DA291C',
+  '#FFCD00',
+  '#007A33',
+  '#EB9CA8',
+  '#7C878E',
+  '#8A004F',
+  '#000000',
+  '#10069F',
+  '#00a3e0',
+  '#4CC1A1',
+];
 
 class UserChats extends Component {
   constructor(props) {
@@ -34,7 +43,8 @@ class UserChats extends Component {
     this.setState({loading: true});
     await All_Chats(this.props.userToken).then(response => {
       if (response.status === 200) {
-        this.setState({data: response.data.data});
+        let data = response.data.data.reverse();
+        this.setState({data: data});
         this.setState({loading: false});
       } else {
         alert('Something Went Wrong');
@@ -46,7 +56,7 @@ class UserChats extends Component {
 
   async componentDidMount() {
     // this.focusListener = this.props.navigation.addListener('focus', () => {
-      this.Getchats();
+    this.Getchats();
     // });
   }
   // componentWillUnmount() {
@@ -82,14 +92,23 @@ class UserChats extends Component {
                 this.props.navigation.navigate('Contact', {
                   data: {
                     room_id: item.room_id,
-                    seller_name: item.person[1].username,
+                    seller_name:
+                      this.props.role === 'Seller'
+                        ? item.person[0].username
+                        : item.person[1].username,
                   },
                 })
               }
               style={styles.itemView}>
-              <Text style={styles.UserNameTxt}>{item.person[0].username}</Text>
+              <Text style={styles.UserNameTxt}>
+                {this.props.role === 'Seller'
+                  ? item.person[1].username
+                  : item.person[0].username}
+              </Text>
               <Text style={[styles.UserNameTxt]}>
-                {item.person[1].username}
+                {this.props.role === 'Seller'
+                  ? item.person[0].username
+                  : item.person[1].username}
               </Text>
             </TouchableOpacity>
           )}

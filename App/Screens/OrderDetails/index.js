@@ -275,7 +275,7 @@ class OrderDetails extends Component {
                 </View>
 
                 <Text style={{width: '85%', marginTop: 90, marginLeft: 10}}>
-                  Package being Prepared
+                  Rider has Pickedup the Pakage
                 </Text>
               </View>
 

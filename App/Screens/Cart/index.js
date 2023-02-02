@@ -30,6 +30,7 @@ export default class Cart extends Component {
     this._unsubscribe = this.props.navigation.addListener('focus', async () => {
       let CartData = await AsyncStorage.getItem('Cart');
       CartData = JSON.parse(CartData);
+      console.log(CartData);
       if (CartData == null) {
         CartData = [];
       }
@@ -40,6 +41,7 @@ export default class Cart extends Component {
   componentWillUnmount() {
     this._unsubscribe();
   }
+
   paymentSelection() {
     Alert.alert('Select Payment Method', '', [
       {
@@ -87,7 +89,7 @@ export default class Cart extends Component {
       payment: this.state.paymentMethod,
       quantity: quantity,
     };
-    console.log(data);
+
     if (this.state.paymentMethod == '') {
       alert('Select Payment Method');
     } else {

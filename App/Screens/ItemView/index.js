@@ -18,6 +18,7 @@ import { isIphoneXorAbove } from '../../helper/Constant';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Server from '../../helper/Server';
 import { BLACK } from '../../helper/Color';
+import { isArray } from 'react-native-axios/lib/utils';
 class ItemView extends Component {
   constructor(props) {
     super(props);
@@ -218,7 +219,7 @@ class ItemView extends Component {
                 <Text style={{ fontSize: 22 }}>
                   PKR {this.state.productData.price} / KG
                 </Text>
-                <Text style={{ fontSize: 22 }}>5 / 5</Text>
+                <Text style={{ fontSize: 22 }}>5 / {JSON.stringify(isArray(this.state.totalStart) ? 0 : this.state.totalStart)}</Text>
               </View>
               {this.props.role === 'Buyer' && (
                 <View

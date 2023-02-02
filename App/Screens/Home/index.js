@@ -20,6 +20,17 @@ import * as userActions from '../../redux/actions/user';
 import {SCREEN} from '../../helper/Constant';
 import Server from '../../helper/Server';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import ImageSlider from 'react-native-image-slider';
+
+const images = [
+  require('../../assets/HeaderImg.png'),
+  require('../../assets/HeaderImg2.jpg'),
+  require('../../assets/HeaderImg3.jpg'),
+  require('../../assets/HeaderImg4.jpg'),
+  require('../../assets/HeaderImg5.jpg'),
+  require('../../assets/HeaderImg6.jpg'),
+  require('../../assets/HeaderImg7.jpg'),
+];
 
 class Home extends Component {
   constructor(props) {
@@ -76,13 +87,13 @@ class Home extends Component {
   }
 
   async componentDidMount() {
-    this._unsubscribe = this.props.navigation.addListener('focus', async () => {
-      this.ApiCalling();
-    });
+    // this._unsubscribe = this.props.navigation.addListener('focus', async () => {
+    this.ApiCalling();
+    // });
   }
-  componentWillUnmount() {
-    this._unsubscribe();
-  }
+  // componentWillUnmount() {
+  //   this._unsubscribe();
+  // }
   handleSearchInput(e) {
     let text = e.toLowerCase();
     let fullList = this.state.all_data.All;
@@ -109,14 +120,18 @@ class Home extends Component {
   render() {
     return (
       <View style={styles.wrapperView}>
-        <Image
-          style={{
-            width: SCREEN.width,
-            height: SCREEN.height / 2.5,
-            resizeMode: 'stretch',
-          }}
-          source={require('../../assets/HeaderImg.png')}
-        />
+        <View style={{height: SCREEN.height / 2.3}}>
+          <ImageSlider
+            autoPlayWithInterval={2500}
+            images={images}
+            customSlide={({index, item, style, width}) => (
+              // It's important to put style here because it's got offset inside
+              <View key={index} style={[style, styles.customSlide]}>
+                <Image source={item} style={styles.customImage} />
+              </View>
+            )}
+          />
+        </View>
 
         <View
           style={{
@@ -313,7 +328,11 @@ const styles = StyleSheet.create({
   wrapperView: {
     flex: 1,
   },
-
+  customImage: {
+    width: '100%',
+    resizeMode: 'stretch',
+    height: '100%',
+  },
   itemTxt: {
     fontSize: 36,
     fontWeight: 'bold',

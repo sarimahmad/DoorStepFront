@@ -48,7 +48,7 @@ class Splash extends Component {
               color: WHITE.dark,
               textAlign: 'center',
             }}>
-            Door Step Farmer
+            DoorStep Farmer
           </Text>
         </SafeAreaView>
       </View>

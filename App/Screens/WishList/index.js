@@ -77,7 +77,7 @@ class WishList extends Component {
       }
     } else {
       let data = [];
-      data.push({...item});
+      data.push({...item, NumberofProduct: this.state.value});
       AsyncStorage.setItem('Cart', JSON.stringify(data));
       alert('Item Added to Cart');
       console.log(item.id);
